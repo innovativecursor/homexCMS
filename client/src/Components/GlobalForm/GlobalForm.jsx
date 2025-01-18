@@ -261,136 +261,371 @@ function GlobalForm(props) {
 
   return (
     <>
-      <PageWrapper title={`${props?.pageMode} Projects`}>
-        <div className="container mx-auto p-4 text-xl">
-          <Form onFinish={submitForm}>
-            <div className="grid grid-cols-1 my-2 sm:grid-cols-2 md:grid-cols-2 gap-6">
-              <div className="">
+      {props?.type === "Projects" ? (
+        <PageWrapper title={`${props?.pageMode} Projects`}>
+          <div className="container mx-auto p-4 text-xl">
+            <Form onFinish={submitForm}>
+              <div className="grid grid-cols-1 my-2 sm:grid-cols-2 md:grid-cols-2 gap-6">
+                <div className="">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Name of the Project <span className="text-red-600">*</span>
+                  </label>
+                  <Input
+                    disabled={
+                      props?.pageMode === "Delete" || props?.pageMode === "View"
+                        ? true
+                        : false
+                    }
+                    required
+                    isMulti={false}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, project_name: e.target.value });
+                    }}
+                    isClearable
+                    options={projects?.length != 0 ? projects : []}
+                    isSearchable
+                    value={inputs?.project_name}
+                  />
+                </div>
+                <div className="">
+                  <label className="block text-sm font-medium text-gray-700">
+                    location
+                  </label>
+                  <Input
+                    disabled={
+                      props?.pageMode === "Delete" || props?.pageMode === "View"
+                        ? true
+                        : false
+                    }
+                    isMulti={false}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, location: e.target.value });
+                    }}
+                    isClearable
+                    options={projects?.length != 0 ? projects : []}
+                    isSearchable
+                    value={inputs?.location}
+                  />
+                </div>
+                <div className="">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Key Features
+                  </label>
+                  <Input
+                    disabled={
+                      props?.pageMode === "Delete" || props?.pageMode === "View"
+                        ? true
+                        : false
+                    }
+                    isMulti={false}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, keyFeatures: e.target.value });
+                    }}
+                    isClearable
+                    options={projects?.length != 0 ? projects : []}
+                    isSearchable
+                    value={inputs?.keyFeatures}
+                  />
+                </div>
+                <div className="">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Execution Time
+                  </label>
+                  <Input
+                    disabled={
+                      props?.pageMode === "Delete" || props?.pageMode === "View"
+                        ? true
+                        : false
+                    }
+                    isMulti={false}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, executionTime: e.target.value });
+                    }}
+                    isClearable
+                    options={projects?.length != 0 ? projects : []}
+                    isSearchable
+                    value={inputs?.executionTime}
+                  />
+                </div>
+                <div className="">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Turn Over
+                  </label>
+                  <Input
+                    disabled={
+                      props?.pageMode === "Delete" || props?.pageMode === "View"
+                        ? true
+                        : false
+                    }
+                    isMulti={false}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, turnOver: e.target.value });
+                    }}
+                    isClearable
+                    options={projects?.length != 0 ? projects : []}
+                    isSearchable
+                    value={inputs?.turnOver}
+                  />
+                </div>
+              </div>
+              <div className="my-5">
                 <label className="block text-sm font-medium text-gray-700">
-                  Name of the Project <span className="text-red-600">*</span>
+                  Description
                 </label>
-                <Input
-                  disabled={
-                    props?.pageMode === "Delete" || props?.pageMode === "View"
-                      ? true
-                      : false
-                  }
-                  required
-                  isMulti={false}
+                <TextArea
+                  disabled={props?.pageMode === "Delete" ? true : false}
+                  type="text"
+                  id="project_desc"
+                  name="project_desc"
+                  className="mt-1 p-2 block w-full border rounded-md"
                   onChange={(e) => {
-                    setInputs({ ...inputs, project_name: e.target.value });
+                    setInputs({ ...inputs, [e.target.name]: e.target.value });
                   }}
-                  isClearable
-                  options={projects?.length != 0 ? projects : []}
-                  isSearchable
-                  value={inputs?.project_name}
+                  value={inputs?.project_desc}
                 />
               </div>
-              <div className="">
+              {/* Upload Pictures */}
+              {props.pageMode === "Add" || props.pageMode === "Update" ? (
+                <div className="my-5">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Upload Pictures (Max size upto 10 MB){" "}
+                    <span className="text-red-600">*</span>
+                  </label>
+                  <Upload
+                    action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                    // action="/upload.do"
+                    listType="picture-card"
+                    multiple={false}
+                    name="productImages"
+                    fileList={imageArray}
+                    maxCount={1}
+                    onChange={(e) => {
+                      setImageArray(e.fileList);
+                    }}
+                  >
+                    <div>
+                      <PlusOutlined />
+                      <div
+                        style={{
+                          marginTop: 8,
+                        }}
+                      >
+                        Upload
+                      </div>
+                    </div>
+                  </Upload>
+                </div>
+              ) : (
+                ""
+              )}
+              {/* Pictures */}
+              {props?.pageMode !== "Add" ? (
+                <div className="my-5">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Pictures
+                  </label>
+                  <div className="w-full flex flex-row">
+                    {imageClone?.map((el, index) => (
+                      <div className="card" key={index}>
+                        <div className="flex h-60 justify-center">
+                          <img
+                            src={el?.url}
+                            alt="asd4e"
+                            className="object-contain"
+                          />
+                        </div>
+                        {props.pageMode !== "View" &&
+                        props.pageMode !== "Delete" ? (
+                          <div className="flex flex-row justify-center items-end">
+                            <button
+                              className="my-4 text-black p-4 font-semibold bg-orange-400 hover:text-white rounded-lg"
+                              onClick={() => deleteModal(index)}
+                              type="button"
+                            >
+                              Delete Picture
+                            </button>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+              {props.pageMode === "View" ? (
+                ""
+              ) : (
+                <div className="acitonButtons w-full flex justify-center">
+                  <button
+                    className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-indigo-600 hover:to-blue-500 text-white font-semibold py-3 px-6 rounded-full shadow-md transition duration-300 ease-in-out items-center justify-center"
+                    type="submit"
+                  >
+                    {props.pageMode} Data
+                  </button>
+                </div>
+              )}
+            </Form>
+          </div>
+        </PageWrapper>
+      ) : props?.type === "About" ? (
+        <PageWrapper title={`${props?.pageMode} About Us`}>
+          <div className="container mx-auto p-4 text-xl">
+            <Form onFinish={submitForm}>
+              <div className="grid grid-cols-1 my-2 sm:grid-cols-2 md:grid-cols-2 gap-6">
+                <div className="">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Title <span className="text-red-600">*</span>
+                  </label>
+                  <Input
+                    disabled={
+                      props?.pageMode === "Delete" || props?.pageMode === "View"
+                        ? true
+                        : false
+                    }
+                    required
+                    isMulti={false}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, about_title: e.target.value });
+                    }}
+                    isClearable
+                    options={projects?.length != 0 ? projects : []}
+                    isSearchable
+                    value={inputs?.about_title}
+                  />
+                </div>
+                <div className="">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Our Values 1 <span className="text-red-600">*</span>
+                  </label>
+                  <Input
+                    disabled={
+                      props?.pageMode === "Delete" || props?.pageMode === "View"
+                        ? true
+                        : false
+                    }
+                    required
+                    isMulti={false}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, our_values1: e.target.value });
+                    }}
+                    isClearable
+                    options={projects?.length != 0 ? projects : []}
+                    isSearchable
+                    value={inputs?.our_values1}
+                  />
+                </div>
+                <div className="">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Our Values 2 <span className="text-red-600">*</span>
+                  </label>
+                  <Input
+                    disabled={
+                      props?.pageMode === "Delete" || props?.pageMode === "View"
+                        ? true
+                        : false
+                    }
+                    required
+                    isMulti={false}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, our_values2: e.target.value });
+                    }}
+                    isClearable
+                    options={projects?.length != 0 ? projects : []}
+                    isSearchable
+                    value={inputs?.our_values2}
+                  />
+                </div>
+                <div className="">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Our Values 3 <span className="text-red-600">*</span>
+                  </label>
+                  <Input
+                    disabled={
+                      props?.pageMode === "Delete" || props?.pageMode === "View"
+                        ? true
+                        : false
+                    }
+                    required
+                    isMulti={false}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, our_values3: e.target.value });
+                    }}
+                    isClearable
+                    options={projects?.length != 0 ? projects : []}
+                    isSearchable
+                    value={inputs?.our_values3}
+                  />
+                </div>
+                <div className="">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Our Values 4 <span className="text-red-600">*</span>
+                  </label>
+                  <Input
+                    disabled={
+                      props?.pageMode === "Delete" || props?.pageMode === "View"
+                        ? true
+                        : false
+                    }
+                    required
+                    isMulti={false}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, our_values4: e.target.value });
+                    }}
+                    isClearable
+                    options={projects?.length != 0 ? projects : []}
+                    isSearchable
+                    value={inputs?.our_values4}
+                  />
+                </div>
+              </div>
+              <div className="my-5">
                 <label className="block text-sm font-medium text-gray-700">
-                  location
+                  Description
                 </label>
-                <Input
-                  disabled={
-                    props?.pageMode === "Delete" || props?.pageMode === "View"
-                      ? true
-                      : false
-                  }
-                  isMulti={false}
+                <TextArea
+                  disabled={props?.pageMode === "Delete" ? true : false}
+                  type="text"
+                  id="description"
+                  name="description"
+                  className="mt-1 p-2 block w-full border rounded-md"
                   onChange={(e) => {
-                    setInputs({ ...inputs, location: e.target.value });
+                    setInputs({ ...inputs, [e.target.name]: e.target.value });
                   }}
-                  isClearable
-                  options={projects?.length != 0 ? projects : []}
-                  isSearchable
-                  value={inputs?.location}
+                  value={inputs?.description}
                 />
               </div>
-              <div className="">
+              <div className="my-5">
                 <label className="block text-sm font-medium text-gray-700">
-                  Key Features
+                  Our Mission
                 </label>
-                <Input
-                  disabled={
-                    props?.pageMode === "Delete" || props?.pageMode === "View"
-                      ? true
-                      : false
-                  }
-                  isMulti={false}
+                <TextArea
+                  disabled={props?.pageMode === "Delete" ? true : false}
+                  type="text"
+                  id="subdescription"
+                  name="subdescription"
+                  className="mt-1 p-2 block w-full border rounded-md"
                   onChange={(e) => {
-                    setInputs({ ...inputs, keyFeatures: e.target.value });
+                    setInputs({ ...inputs, [e.target.name]: e.target.value });
                   }}
-                  isClearable
-                  options={projects?.length != 0 ? projects : []}
-                  isSearchable
-                  value={inputs?.keyFeatures}
+                  value={inputs?.subdescription}
                 />
               </div>
-              <div className="">
-                <label className="block text-sm font-medium text-gray-700">
-                  Execution Time
-                </label>
-                <Input
-                  disabled={
-                    props?.pageMode === "Delete" || props?.pageMode === "View"
-                      ? true
-                      : false
-                  }
-                  isMulti={false}
-                  onChange={(e) => {
-                    setInputs({ ...inputs, executionTime: e.target.value });
-                  }}
-                  isClearable
-                  options={projects?.length != 0 ? projects : []}
-                  isSearchable
-                  value={inputs?.executionTime}
-                />
-              </div>
-              <div className="">
-                <label className="block text-sm font-medium text-gray-700">
-                  Turn Over
-                </label>
-                <Input
-                  disabled={
-                    props?.pageMode === "Delete" || props?.pageMode === "View"
-                      ? true
-                      : false
-                  }
-                  isMulti={false}
-                  onChange={(e) => {
-                    setInputs({ ...inputs, turnOver: e.target.value });
-                  }}
-                  isClearable
-                  options={projects?.length != 0 ? projects : []}
-                  isSearchable
-                  value={inputs?.turnOver}
-                />
-              </div>
-            </div>
-            <div className="my-5">
-              <label className="block text-sm font-medium text-gray-700">
-                Description
-              </label>
-              <TextArea
-                disabled={props?.pageMode === "Delete" ? true : false}
-                type="text"
-                id="project_desc"
-                name="project_desc"
-                className="mt-1 p-2 block w-full border rounded-md"
-                onChange={(e) => {
-                  setInputs({ ...inputs, [e.target.name]: e.target.value });
-                }}
-                value={inputs?.project_desc}
-              />
-            </div>
-            {/* Upload Pictures */}
-            {props.pageMode === "Add" || props.pageMode === "Update" ? (
+              {/* Upload Pictures */}
               <div className="my-5">
                 <label
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Upload Pictures (Max size upto 10 MB){" "}
+                  About Image 1 (Max size upto 10 MB){" "}
                   <span className="text-red-600">*</span>
                 </label>
                 <Upload
@@ -417,11 +652,7 @@ function GlobalForm(props) {
                   </div>
                 </Upload>
               </div>
-            ) : (
-              ""
-            )}
-            {/* Pictures */}
-            {props?.pageMode !== "Add" ? (
+              {/* Pictures */}
               <div className="my-5">
                 <label
                   htmlFor="name"
@@ -457,12 +688,75 @@ function GlobalForm(props) {
                   ))}
                 </div>
               </div>
-            ) : (
-              ""
-            )}
-            {props.pageMode === "View" ? (
-              ""
-            ) : (
+              {/* Upload Pictures 2 */}
+              <div className="my-5">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  About Image 2 (Max size upto 10 MB){" "}
+                  <span className="text-red-600">*</span>
+                </label>
+                <Upload
+                  action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                  // action="/upload.do"
+                  listType="picture-card"
+                  multiple={false}
+                  name="productImages"
+                  fileList={imageArray}
+                  maxCount={1}
+                  onChange={(e) => {
+                    setImageArray(e.fileList);
+                  }}
+                >
+                  <div>
+                    <PlusOutlined />
+                    <div
+                      style={{
+                        marginTop: 8,
+                      }}
+                    >
+                      Upload
+                    </div>
+                  </div>
+                </Upload>
+              </div>
+              {/* Pictures */}
+              <div className="my-5">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Pictures
+                </label>
+                <div className="w-full flex flex-row">
+                  {imageClone?.map((el, index) => (
+                    <div className="card" key={index}>
+                      <div className="flex h-60 justify-center">
+                        <img
+                          src={el?.url}
+                          alt="asd4e"
+                          className="object-contain"
+                        />
+                      </div>
+                      {props.pageMode !== "View" &&
+                      props.pageMode !== "Delete" ? (
+                        <div className="flex flex-row justify-center items-end">
+                          <button
+                            className="my-4 text-black p-4 font-semibold bg-orange-400 hover:text-white rounded-lg"
+                            onClick={() => deleteModal(index)}
+                            type="button"
+                          >
+                            Delete Picture
+                          </button>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
               <div className="acitonButtons w-full flex justify-center">
                 <button
                   className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-indigo-600 hover:to-blue-500 text-white font-semibold py-3 px-6 rounded-full shadow-md transition duration-300 ease-in-out items-center justify-center"
@@ -471,10 +765,12 @@ function GlobalForm(props) {
                   {props.pageMode} Data
                 </button>
               </div>
-            )}
-          </Form>
-        </div>
-      </PageWrapper>
+            </Form>
+          </div>
+        </PageWrapper>
+      ) : (
+        <></>
+      )}
     </>
   );
 }

@@ -5,11 +5,7 @@ export const Menu = {
     { text: "Update Projects", link: "/updateProjects" },
     { text: "Delete Projects", link: "/deleteProjects" },
   ],
-  careers: [
-    { text: "Create Job Openings", link: "/careers" },
-    { text: "Edit Job Openings", link: "/updateCareers" },
-    { text: "Delete Job Openings", link: "/deleteCareers" },
-  ],
+  about: [{ text: "About Us", link: "/about" }],
   Misc: [
     {
       text: "Font Style & Text Color",

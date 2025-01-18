@@ -56,3 +56,27 @@ exports.formattedDatePicResult = (result) => {
   });
   return cleanResult;
 };
+exports.formatteddualImages = (result) => {
+  const cleanResult = result.map((el) => {
+    return {
+      ...el.toJSON(),
+      about_image1: [
+        {
+          url: image.url,
+          secure_url: image.secure_url,
+          public_id: image.public_id,
+          folder: image.folder,
+        },
+      ],
+      about_image2: [
+        {
+          url: image.url,
+          secure_url: image.secure_url,
+          public_id: image.public_id,
+          folder: image.folder,
+        },
+      ],
+    };
+  });
+  return cleanResult;
+};

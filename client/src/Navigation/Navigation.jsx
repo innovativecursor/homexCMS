@@ -20,10 +20,8 @@ import ResetPassword from "../Components/resetPassword/ResetPassword";
 import CreateProjects from "../Components/createProject/CreateProjects";
 import Updateprojects from "../Components/updateProject/UpdateProject";
 import DeleteProjects from "../Components/deleteProjects/DeleteProjects";
-import Careers from "../Components/careers/Careers";
-import UpdateCareers from "../Components/careers/UpdateCareers";
-import DeleteCareers from "../Components/careers/DeleteCareers";
 import FontColor from "../Components/fontandColor/FontColor";
+import About from "../Components/about/About";
 
 function Navigation(props) {
   const location = useLocation();
@@ -68,17 +66,7 @@ function Navigation(props) {
               />
               <Route path="/deleteProjectsinner" element={<DeleteProjects />} />
 
-              <Route path="/careers" element={<Careers pageMode="Add" />} />
-              <Route
-                path="/updateCareers"
-                element={<ProductTable pageMode="Update" type="Careers" />}
-              />
-              <Route path="/updateCareersinner" element={<UpdateCareers />} />
-              <Route
-                path="/deleteCareers"
-                element={<ProductTable pageMode="Delete" type="Careers" />}
-              />
-              <Route path="/deleteCareersinner" element={<DeleteCareers />} />
+              <Route path="/about" element={<About />} />
               <Route path="/font_color" element={<FontColor />} />
             </Route>
             <Route path="*" element={<Robots />} />

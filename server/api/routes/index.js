@@ -8,6 +8,7 @@ const authenticateUser = require("../middleware/authenticateUser");
 const careerController = require("../controllers/careerController");
 const fontColorController = require("../controllers/fontColorController");
 const { apiLimiter } = require("../middleware/apiLimiter");
+const { aboutController } = require("../controllers/aboutController");
 
 // User routes
 router.post("/signup", userController.signup);
@@ -45,11 +46,10 @@ router.delete(
   authenticateUser,
   projectController.deleteProject
 );
-//Careers
-router.get("/careers", careerController.getAllCareers);
-router.post("/careers", authenticateUser, careerController.createCareer);
-router.put("/careers/:id", authenticateUser, careerController.updateCareer);
-router.delete("/careers/:id", authenticateUser, careerController.deleteCareer);
+//About
+router.get("/aboutpage", aboutController.getAbout);
+router.put("/updateAbout", authenticateUser, aboutController.updateAbout);
+
 //Font and its Color
 router.get("/getFontColor", fontColorController.getFontColor);
 router.put(
