@@ -29,11 +29,6 @@ function Home(props) {
       key: "email",
     },
     {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
-    },
-    {
       title: "Role Id",
       dataIndex: "role_id",
       key: "role_id",

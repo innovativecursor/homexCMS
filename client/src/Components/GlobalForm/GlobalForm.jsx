@@ -42,7 +42,9 @@ function GlobalForm(props) {
   const [check, setcheck] = useState(false);
 
   const NavigateTo = useNavigate();
-  useEffect(() => {}, []);
+  useEffect(() => {
+    setInputs(props?.record);
+  }, [props?.record]);
 
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -73,18 +75,11 @@ function GlobalForm(props) {
           const base64String = await getBase64(imageArray[i]?.originFileObj);
           B64Array.push(base64String);
         }
-        if (props?.type == "Hero") {
-          let dummyObj = { pictures: [...B64Array] };
 
-          asd = Object.assign(inputs, { pictures: dummyObj?.pictures });
-          setInputs({ ...inputs, pictures: asd });
-        } else {
-          let dummyObj = [...(inputs && inputs?.pictures)];
-
-          dummyObj = [...dummyObj, ...B64Array];
-          asd = Object.assign(inputs, { pictures: dummyObj });
-          setInputs({ ...inputs, pictures: asd });
-        }
+        debugger;
+        let dummyObj = { pictures: [...B64Array] };
+        asd = Object.assign(inputs, { pictures: dummyObj?.pictures });
+        setInputs({ ...inputs, pictures: asd });
       }
     }
   };
@@ -275,7 +270,7 @@ function GlobalForm(props) {
                   Name of the Project <span className="text-red-600">*</span>
                 </label>
                 <Input
-                  isDisabled={
+                  disabled={
                     props?.pageMode === "Delete" || props?.pageMode === "View"
                       ? true
                       : false
@@ -296,7 +291,7 @@ function GlobalForm(props) {
                   location
                 </label>
                 <Input
-                  isDisabled={
+                  disabled={
                     props?.pageMode === "Delete" || props?.pageMode === "View"
                       ? true
                       : false
@@ -316,7 +311,7 @@ function GlobalForm(props) {
                   Key Features
                 </label>
                 <Input
-                  isDisabled={
+                  disabled={
                     props?.pageMode === "Delete" || props?.pageMode === "View"
                       ? true
                       : false
@@ -336,7 +331,7 @@ function GlobalForm(props) {
                   Execution Time
                 </label>
                 <Input
-                  isDisabled={
+                  disabled={
                     props?.pageMode === "Delete" || props?.pageMode === "View"
                       ? true
                       : false
@@ -356,7 +351,7 @@ function GlobalForm(props) {
                   Turn Over
                 </label>
                 <Input
-                  isDisabled={
+                  disabled={
                     props?.pageMode === "Delete" || props?.pageMode === "View"
                       ? true
                       : false
@@ -395,7 +390,8 @@ function GlobalForm(props) {
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Upload Pictures <span className="text-red-600">*</span>
+                  Upload Pictures (Max size upto 10 MB){" "}
+                  <span className="text-red-600">*</span>
                 </label>
                 <Upload
                   action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"

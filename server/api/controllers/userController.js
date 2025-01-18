@@ -10,8 +10,7 @@ const nodemailer = require("nodemailer");
 const { Op } = require("sequelize");
 
 exports.signup = async (req, res) => {
-  const { first_name, last_name, email, password, role, role_id, code } =
-    req.body;
+  const { first_name, last_name, email, password, role_id, code } = req.body;
   try {
     const findEmail = await User.findOne({ where: { email } });
     if (findEmail) {
@@ -27,7 +26,6 @@ exports.signup = async (req, res) => {
       last_name,
       email,
       password: hashedPassword,
-      role,
       role_id,
     });
     res.status(200).json({ message: "User Successfully registered!" });
@@ -76,14 +74,7 @@ exports.login = async (req, res) => {
     // );
     const sendUserInfo = await User.findOne({
       where: { email },
-      attributes: [
-        "user_id",
-        "first_name",
-        "last_name",
-        "email",
-        "role",
-        "role_id",
-      ],
+      attributes: ["user_id", "first_name", "last_name", "email", "role_id"],
     });
     res.status(200).json({ sendUserInfo, token });
   } catch (error) {
@@ -93,14 +84,7 @@ exports.login = async (req, res) => {
 exports.allUsers = async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: [
-        "user_id",
-        "first_name",
-        "last_name",
-        "email",
-        "role",
-        "role_id",
-      ],
+      attributes: ["user_id", "first_name", "last_name", "email", "role_id"],
     });
     res.status(200).json({ users });
   } catch (error) {

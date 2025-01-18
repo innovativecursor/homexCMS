@@ -119,50 +119,6 @@ function ProductTable(props) {
       fixed: "left",
     },
     {
-      title: "Name of the Menu",
-      dataIndex: "menu_name",
-      key: "menu_name",
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder="Search Menu Name"
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: "block" }}
-          />
-          <Button
-            type="primary"
-            onClick={() => confirm()}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => clearFilters()}
-            size="small"
-            style={{ width: 90, marginTop: 4 }}
-          >
-            Reset
-          </Button>
-        </div>
-      ),
-      onFilter: (value, record) =>
-        record.menu_name
-          ?.toString()
-          .toLowerCase()
-          .includes(value.toLowerCase()),
-    },
-    {
       title: "Name of the Project",
       dataIndex: "project_name",
       key: "project_name",
@@ -187,7 +143,7 @@ function ProductTable(props) {
             onClick={() => confirm()}
             icon={<SearchOutlined />}
             size="small"
-            style={{ width: 90 }}
+            style={{ width: 90, backgroundColor: "blue" }}
           >
             Search
           </Button>
@@ -243,7 +199,8 @@ function ProductTable(props) {
       setResult(result?.data);
     } else if (props?.type == "Projects" && props?.type) {
       const result = await getAxiosCall("/fetchProjects");
-      setResult(result);
+
+      setResult(result?.data);
     } else if (props?.type == "Careers") {
       const result = await getAxiosCall("/careers");
       setResult(result?.data?.data);
