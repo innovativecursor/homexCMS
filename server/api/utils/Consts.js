@@ -57,7 +57,7 @@ exports.formattedDatePicResult = (result) => {
   return cleanResult;
 };
 exports.formatteddualImages = (result) => {
-  const cleanResult = result.map((el) => {
+  const cleanResult = json(result)?.map((el) => {
     return {
       ...el.toJSON(),
       about_image1: [

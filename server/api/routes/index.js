@@ -5,10 +5,9 @@ const userController = require("../controllers/userController");
 const inquiryController = require("../controllers/inquiryController");
 const projectController = require("../controllers/projectController");
 const authenticateUser = require("../middleware/authenticateUser");
-const careerController = require("../controllers/careerController");
 const fontColorController = require("../controllers/fontColorController");
 const { apiLimiter } = require("../middleware/apiLimiter");
-const { aboutController } = require("../controllers/aboutController");
+const aboutController = require("../controllers/aboutController");
 
 // User routes
 router.post("/signup", userController.signup);
@@ -48,7 +47,7 @@ router.delete(
 );
 //About
 router.get("/aboutpage", aboutController.getAbout);
-router.put("/updateAbout", authenticateUser, aboutController.updateAbout);
+router.put("/updateAbout/:id", authenticateUser, aboutController.updateAbout);
 
 //Font and its Color
 router.get("/getFontColor", fontColorController.getFontColor);

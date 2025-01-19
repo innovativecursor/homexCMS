@@ -33,10 +33,12 @@ const { TextArea } = Input;
 function GlobalForm(props) {
   const [loading, setLoading] = useState(false);
   const [imageArray, setImageArray] = useState([]);
+  const [imageArray2, setImageArray2] = useState([]);
   const [inputs, setInputs] = useState({});
   const [location, setLocation] = useState({});
   const [stationOptions, setStationOptions] = useState();
-  const [imageClone, setImageClone] = useState(props?.record?.pictures);
+  const [imageClone, setImageClone] = useState(props?.record?.pictures || []);
+  const [imageClone2, setImageClone2] = useState([]);
   const [menuOptions, setMenuOptions] = useState([]);
   const [projects, setProjects] = useState();
   const [check, setcheck] = useState(false);
@@ -45,7 +47,18 @@ function GlobalForm(props) {
   useEffect(() => {
     setInputs(props?.record);
   }, [props?.record]);
+  useEffect(() => {
+    callAboutus();
+  }, []);
 
+  const callAboutus = async () => {
+    if (props?.type === "About") {
+      const fetchAboutDetails = await getAxiosCall("/aboutpage");
+      setInputs(fetchAboutDetails?.data);
+      setImageClone(fetchAboutDetails?.data?.about_image1);
+      setImageClone2(fetchAboutDetails?.data?.about_image2);
+    }
+  };
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -68,18 +81,43 @@ function GlobalForm(props) {
         setInputs({ ...inputs, pictures: asd });
       }
     } else {
-      if (imageArray?.length != 0) {
+      if (imageArray?.length != 0 && props?.type != "About") {
         let B64Array = [];
         let asd;
         for (let i = 0; i < imageArray.length; i++) {
           const base64String = await getBase64(imageArray[i]?.originFileObj);
           B64Array.push(base64String);
         }
-
-        debugger;
         let dummyObj = { pictures: [...B64Array] };
         asd = Object.assign(inputs, { pictures: dummyObj?.pictures });
         setInputs({ ...inputs, pictures: asd });
+      }
+
+      if (props?.type === "About") {
+        let B64Array = [];
+        let asd;
+        if (imageArray?.length !== 0 || imageClone === undefined) {
+          for (let i = 0; i < imageArray.length; i++) {
+            const base64String = await getBase64(imageArray[i]?.originFileObj);
+            B64Array.push(base64String);
+          }
+          let dummyObj = { about_image1: [...B64Array] };
+          asd = Object.assign(inputs, { about_image1: dummyObj?.about_image1 });
+          setInputs({ ...inputs, about_image1: asd });
+          B64Array = [];
+        }
+        if (imageArray2?.length !== 0 || imageClone2 === undefined) {
+          for (let i = 0; i < imageArray2.length; i++) {
+            const base64String = await getBase64(imageArray2[i]?.originFileObj);
+            B64Array.push(base64String);
+          }
+          let dummyObj2 = { about_image2: [...B64Array] };
+          asd = Object.assign(inputs, {
+            about_image2: dummyObj2?.about_image2,
+          });
+          setInputs({ ...inputs, about_image2: asd });
+          B64Array = [];
+        }
       }
     }
   };
@@ -120,7 +158,7 @@ function GlobalForm(props) {
           }
           break;
         case "Update":
-          if (imageArray.length == 0 && imageClone.length == 0) {
+          if (imageArray?.length == 0 && imageClone?.length == 0) {
             Swal.fire({
               title: "error",
               text: "Add at least one Picture to proceed!",
@@ -129,9 +167,42 @@ function GlobalForm(props) {
               allowOutsideClick: false,
             });
             return;
+          }
+          if (
+            props?.type === "About" &&
+            imageArray2?.length == 0 &&
+            imageClone2?.length == 0
+          ) {
+            Swal.fire({
+              title: "error",
+              text: "Add at least one Picture in About Image 2 to proceed!",
+              icon: "error",
+              confirmButtonText: "Alright!",
+              allowOutsideClick: false,
+            });
+            return;
           } else {
             //merging the new images (if uploaded)
             await convertAllToBase64();
+          }
+          if (props.type === "About") {
+            const updatedResult = await updateAxiosCall(
+              "/updateAbout",
+              1,
+              inputs
+            );
+            if (updatedResult) {
+              Swal.fire({
+                title: "Success",
+                text: updatedResult?.message,
+                icon: "success",
+                confirmButtonText: "Great!",
+                allowOutsideClick: false,
+              }).then(() => {
+                setInputs({});
+                window.location.reload(true);
+              });
+            }
           }
           if (props.type === "Projects") {
             const updatedResult = await updateAxiosCall(
@@ -150,21 +221,6 @@ function GlobalForm(props) {
                 setInputs();
                 NavigateTo("/updateProjects");
               });
-            }
-          }
-          if (props.type == "Hero") {
-            let answer = await postAxiosCall("/updateHero", inputs);
-            if (answer) {
-              Swal.fire({
-                title: "Success",
-                text: answer?.message,
-                icon: "success",
-                confirmButtonText: "Great!",
-                allowOutsideClick: false,
-              }).then(() => {
-                window.location.reload(true);
-              });
-              setInputs({});
             }
           }
           break;
@@ -258,7 +314,19 @@ function GlobalForm(props) {
       }
     });
   };
-
+  const beforeUpload = (file) => {
+    const isLt10M = file.size / 1024 / 1024 < 10; // Size in MB
+    if (!isLt10M) {
+      Swal.fire({
+        title: "Error",
+        text: "Image must be smaller than 10MB!",
+        icon: "error",
+        confirmButtonText: "Alright!",
+        allowOutsideClick: false,
+      });
+    }
+    return isLt10M || Upload.LIST_IGNORE; // Prevent upload if file size exceeds limit
+  };
   return (
     <>
       {props?.type === "Projects" ? (
@@ -399,6 +467,7 @@ function GlobalForm(props) {
                     // action="/upload.do"
                     listType="picture-card"
                     multiple={false}
+                    beforeUpload={beforeUpload}
                     name="productImages"
                     fileList={imageArray}
                     maxCount={1}
@@ -589,7 +658,7 @@ function GlobalForm(props) {
               </div>
               <div className="my-5">
                 <label className="block text-sm font-medium text-gray-700">
-                  Description
+                  Description <span className="text-red-500">*</span>
                 </label>
                 <TextArea
                   disabled={props?.pageMode === "Delete" ? true : false}
@@ -601,11 +670,12 @@ function GlobalForm(props) {
                     setInputs({ ...inputs, [e.target.name]: e.target.value });
                   }}
                   value={inputs?.description}
+                  required
                 />
               </div>
               <div className="my-5">
                 <label className="block text-sm font-medium text-gray-700">
-                  Our Mission
+                  Our Mission <span className="text-red-500">*</span>
                 </label>
                 <TextArea
                   disabled={props?.pageMode === "Delete" ? true : false}
@@ -617,6 +687,7 @@ function GlobalForm(props) {
                     setInputs({ ...inputs, [e.target.name]: e.target.value });
                   }}
                   value={inputs?.subdescription}
+                  required
                 />
               </div>
               {/* Upload Pictures */}
@@ -633,8 +704,9 @@ function GlobalForm(props) {
                   // action="/upload.do"
                   listType="picture-card"
                   multiple={false}
-                  name="productImages"
+                  name="imageArray"
                   fileList={imageArray}
+                  beforeUpload={beforeUpload}
                   maxCount={1}
                   onChange={(e) => {
                     setImageArray(e.fileList);
@@ -663,14 +735,14 @@ function GlobalForm(props) {
                 <div className="w-full flex flex-row">
                   {imageClone?.map((el, index) => (
                     <div className="card" key={index}>
-                      <div className="flex h-60 justify-center">
+                      <div className="flex h-60 max-w-md  justify-center">
                         <img
                           src={el?.url}
                           alt="asd4e"
                           className="object-contain"
                         />
                       </div>
-                      {props.pageMode !== "View" &&
+                      {/* {props.pageMode !== "View" &&
                       props.pageMode !== "Delete" ? (
                         <div className="flex flex-row justify-center items-end">
                           <button
@@ -683,7 +755,7 @@ function GlobalForm(props) {
                         </div>
                       ) : (
                         ""
-                      )}
+                      )} */}
                     </div>
                   ))}
                 </div>
@@ -702,11 +774,12 @@ function GlobalForm(props) {
                   // action="/upload.do"
                   listType="picture-card"
                   multiple={false}
-                  name="productImages"
-                  fileList={imageArray}
+                  name="imageArray2"
+                  fileList={imageArray2}
                   maxCount={1}
+                  beforeUpload={beforeUpload}
                   onChange={(e) => {
-                    setImageArray(e.fileList);
+                    setImageArray2(e.fileList);
                   }}
                 >
                   <div>
@@ -730,16 +803,16 @@ function GlobalForm(props) {
                   Pictures
                 </label>
                 <div className="w-full flex flex-row">
-                  {imageClone?.map((el, index) => (
+                  {imageClone2?.map((el, index) => (
                     <div className="card" key={index}>
-                      <div className="flex h-60 justify-center">
+                      <div className="flex h-60 max-w-md justify-center">
                         <img
                           src={el?.url}
                           alt="asd4e"
                           className="object-contain"
                         />
                       </div>
-                      {props.pageMode !== "View" &&
+                      {/* {props.pageMode !== "View" &&
                       props.pageMode !== "Delete" ? (
                         <div className="flex flex-row justify-center items-end">
                           <button
@@ -752,7 +825,7 @@ function GlobalForm(props) {
                         </div>
                       ) : (
                         ""
-                      )}
+                      )} */}
                     </div>
                   ))}
                 </div>

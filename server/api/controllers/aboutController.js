@@ -1,81 +1,86 @@
 const About = require("../models/about");
 const Joi = require("joi");
+const cloudinary = require("../../utils/cloudinary");
+
 const { formatteddualImages } = require("../utils/Consts");
 const aboutSchema = Joi.object({
   about_title: Joi.string().required(),
   description: Joi.string().required(),
   subdescription: Joi.string().required(),
   our_values1: Joi.string().required(),
-  our_values2: Joi.number().required(),
+  our_values2: Joi.string().required(),
   our_values3: Joi.string().required(),
-  our_values3: Joi.string().required(),
+  our_values4: Joi.string().required(),
   about_image1: Joi.array().required(),
   about_image2: Joi.array().required(),
 });
 exports.getAbout = async (req, res) => {
   try {
     const about = await About.findOne({});
-    const result = formatteddualImages(about);
-    res.status(200).json(result);
+    // const result = formatteddualImages(about);
+    // res.status(200).json(result);
+    res.status(200).json(about);
   } catch (error) {
     res.status(500).json({ message: error.message, error: error.message });
   }
 };
 
 exports.updateAbout = async (req, res) => {
-  const { error } = aboutSchema.validate(req.body);
-  if (error) {
-    return res.status(400).json({ message: error.details[0]?.message });
-  }
-
+  let about;
   try {
     const updatedData = req.body;
-    let about = await About.findOne({});
+    about = await About.findOne({});
+
     if (!about) {
-      return res.status(404).json({ message: "About Content not found" });
+      about = await About.create({
+        about_title: updatedData.about_title,
+        description: updatedData.description,
+        subdescription: updatedData.subdescription,
+        our_values1: updatedData.our_values1,
+        our_values2: updatedData.our_values2,
+        our_values3: updatedData.our_values3,
+        our_values4: updatedData.our_values4,
+        about_image1: [],
+        about_image2: [],
+      });
     }
 
     const folderName = `${process.env.CLOUDINARY_DB}/About`;
 
-    // Helper function to handle image uploads and deletions
-    const processImages = async (imageField) => {
-      const cloudinaryFiles = await cloudinary.api.resources({
-        type: "upload",
-        prefix: folderName,
-      });
+    const processImageField = async (imageField) => {
+      const existingImages = about[imageField] || [];
+      const updatedImages = updatedData[imageField] || [];
 
-      const cloudinaryPublicIds = cloudinaryFiles.resources.map(
-        (file) => file.public_id
-      );
+      // Filter out existing images that are not in updated data (marked for deletion)
+      const imagesToDelete = existingImages
+        .filter(
+          (img) =>
+            !updatedImages.some((newImg) => newImg.public_id === img.public_id)
+        )
+        .map((img) => cloudinary.uploader.destroy(img.public_id));
 
-      const updatedPublicIds = updatedData[imageField]
-        .map((pic) => pic.public_id)
-        .filter(Boolean);
+      await Promise.all(imagesToDelete);
 
-      const deletePromises = cloudinaryPublicIds
-        .filter((publicId) => !updatedPublicIds.includes(publicId))
-        .map((publicId) => cloudinary.uploader.destroy(publicId));
-
-      await Promise.all(deletePromises);
-
-      const uploadPromises = updatedData[imageField]
-        .filter((pic) => typeof pic === "string")
+      // Upload new images that are base64 strings
+      const uploadPromises = updatedImages
+        .filter((img) => typeof img === "string")
         .map((base64Data) =>
           cloudinary.uploader.upload(base64Data, { folder: folderName })
         );
 
       const uploadedImages = await Promise.all(uploadPromises);
 
-      return [
-        ...updatedData[imageField].filter((pic) => typeof pic !== "string"),
-        ...uploadedImages,
-      ];
+      // Combine existing images that are retained and newly uploaded images
+      const finalImages = updatedImages
+        .filter((img) => typeof img !== "string") // Retain non-string (existing) images
+        .concat(uploadedImages); // Add newly uploaded images
+
+      return finalImages;
     };
 
-    // Process about_image1 and about_image2
-    updatedData.about_image1 = await processImages("about_image1");
-    updatedData.about_image2 = await processImages("about_image2");
-
+    // Process about_image1 and about_image2 fields
+    updatedData.about_image1 = await processImageField("about_image1");
+    updatedData.about_image2 = await processImageField("about_image2");
     await about.update(updatedData);
 
     res.status(200).json({ message: "About content updated successfully" });

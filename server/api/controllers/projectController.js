@@ -1,16 +1,15 @@
 const Project = require("../models/Projects");
 const cloudinary = require("../../utils/cloudinary");
 const { formattedResult, formattedThumbnails } = require("../utils/Consts");
-const { Op, Sequelize } = require("sequelize");
 const Joi = require("joi");
 // Define Joi schema
 const projectSchema = Joi.object({
   project_name: Joi.string().required(),
-  location: Joi.string().required(),
-  keyFeatures: Joi.string().required(),
-  executionTime: Joi.string().required(),
-  turnOver: Joi.number().required(),
-  project_desc: Joi.string().required(),
+  location: Joi.string().optional().allow(""),
+  keyFeatures: Joi.string().optional().allow(""),
+  executionTime: Joi.string().optional().allow(""),
+  turnOver: Joi.string().optional().allow(""),
+  project_desc: Joi.string().optional().allow(""),
   pictures: Joi.array().required(), // Assuming pictures are base64 encoded strings
 });
 exports.getProjects = async (req, res) => {
