@@ -6,10 +6,9 @@ export const Menu = {
     { text: "Delete Projects", link: "/deleteProjects" },
   ],
   about: [{ text: "About Us", link: "/about" }],
-  Misc: [
-    {
-      text: "Font Style & Text Color",
-      link: "/font_color",
-    },
+  services: [
+    { text: "Create Services", link: "/createServices" },
+    { text: "Update Services", link: "/updateServices" },
+    { text: "Delete Services", link: "/deleteServices" },
   ],
 };

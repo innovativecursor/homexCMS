@@ -5,7 +5,7 @@ const userController = require("../controllers/userController");
 const inquiryController = require("../controllers/inquiryController");
 const projectController = require("../controllers/projectController");
 const authenticateUser = require("../middleware/authenticateUser");
-const fontColorController = require("../controllers/fontColorController");
+const serviceController = require("../controllers/serviceController");
 const { apiLimiter } = require("../middleware/apiLimiter");
 const aboutController = require("../controllers/aboutController");
 
@@ -49,11 +49,21 @@ router.delete(
 router.get("/aboutpage", aboutController.getAbout);
 router.put("/updateAbout/:id", authenticateUser, aboutController.updateAbout);
 
-//Font and its Color
-router.get("/getFontColor", fontColorController.getFontColor);
-router.put(
-  "/updateFontColor/:id",
+//Services Controller
+router.get("/fetchServices", serviceController.getServices);
+router.post(
+  "/createServices",
   authenticateUser,
-  fontColorController.updateFontColor
+  serviceController.createService
+);
+router.put(
+  "/updateServices/:id",
+  authenticateUser,
+  serviceController.updateService
+);
+router.delete(
+  "/deleteServices/:id",
+  authenticateUser,
+  serviceController.deleteService
 );
 module.exports = router;

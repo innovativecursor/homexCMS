@@ -77,26 +77,11 @@ function ProductTable(props) {
     },
   ];
 
-  const careers_col = [
+  const services_col = [
     {
-      title: "Site Name",
-      dataIndex: "jobOpenings",
-      key: "site",
-      render: (jobOpenings) => jobOpenings?.map((job) => job.site).join(", "), // Handles multiple sites
-    },
-
-    {
-      title: "Workers",
-      dataIndex: "jobOpenings",
-      key: "workers",
-      render: (jobOpenings) =>
-        jobOpenings
-          ?.map((job) =>
-            job.workers
-              .map((worker) => `${worker.count} ${worker.designation}`)
-              .join(", ")
-          )
-          .join(", "), // Format workers info
+      title: "Service Name",
+      dataIndex: "service_name",
+      key: "service_name",
     },
     {
       title: "Created At",
@@ -204,6 +189,9 @@ function ProductTable(props) {
     } else if (props?.type == "Careers") {
       const result = await getAxiosCall("/careers");
       setResult(result?.data?.data);
+    } else if (props?.type == "Services") {
+      const result = await getAxiosCall("/fetchServices");
+      setResult(result?.data);
     }
   };
   const renderTable = () => {
@@ -261,11 +249,11 @@ function ProductTable(props) {
             </Modal>
           </>
         );
-      case "Careers":
+      case "Services":
         return (
-          <PageWrapper title={`${props.pageMode} Careers`}>
+          <PageWrapper title={`${props.pageMode} Services`}>
             <Table
-              columns={careers_col}
+              columns={services_col}
               dataSource={result}
               size="large"
               onRow={(record, rowIndex) => {
@@ -273,8 +261,8 @@ function ProductTable(props) {
                   onClick: () => {
                     navigateTo(
                       props.pageMode === "Delete"
-                        ? "/deleteCareersinner"
-                        : "/updateCareersinner",
+                        ? "/deleteServicesinner"
+                        : "/updateServicesinner",
                       { state: record }
                     );
                   },

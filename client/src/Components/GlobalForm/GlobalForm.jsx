@@ -156,6 +156,22 @@ function GlobalForm(props) {
               setInputs({});
             }
           }
+          if (props.type === "Services") {
+            let answer;
+            answer = await postAxiosCall("/createServices", inputs);
+            if (answer) {
+              Swal.fire({
+                title: "Success",
+                text: answer?.message,
+                icon: "success",
+                confirmButtonText: "Great!",
+                allowOutsideClick: false,
+              }).then(() => {
+                window.location.reload(true);
+              });
+              setInputs({});
+            }
+          }
           break;
         case "Update":
           if (imageArray?.length == 0 && imageClone?.length == 0) {
@@ -223,6 +239,25 @@ function GlobalForm(props) {
               });
             }
           }
+          if (props.type === "Services") {
+            const updatedResult = await updateAxiosCall(
+              "/updateServices",
+              props?.record?.service_id,
+              inputs
+            );
+            if (updatedResult) {
+              Swal.fire({
+                title: "Success",
+                text: updatedResult?.message,
+                icon: "success",
+                confirmButtonText: "Great!",
+                allowOutsideClick: false,
+              }).then(() => {
+                setInputs();
+                NavigateTo("/updateServices");
+              });
+            }
+          }
           break;
         case "Delete":
           Swal.fire({
@@ -258,18 +293,34 @@ function GlobalForm(props) {
         "/deleteProject",
         props?.record?.project_id
       );
+      if (answer) {
+        Swal.fire({
+          title: "Success",
+          text: answer?.message,
+          icon: "success",
+          confirmButtonText: "Great!",
+          allowOutsideClick: false,
+        });
+        setInputs();
+        NavigateTo("/deleteProjects");
+      }
     }
-
-    if (answer) {
-      Swal.fire({
-        title: "Success",
-        text: answer?.message,
-        icon: "success",
-        confirmButtonText: "Great!",
-        allowOutsideClick: false,
-      });
-      setInputs();
-      NavigateTo("/deleteProjects");
+    if (props?.type === "Services" && props?.type) {
+      answer = await deleteAxiosCall(
+        "/deleteServices",
+        props?.record?.service_id
+      );
+      if (answer) {
+        Swal.fire({
+          title: "Success",
+          text: answer?.message,
+          icon: "success",
+          confirmButtonText: "Great!",
+          allowOutsideClick: false,
+        });
+        setInputs();
+        NavigateTo("/deleteServices");
+      }
     }
   };
   const deleteImage = async (imageIndex) => {
@@ -830,6 +881,104 @@ function GlobalForm(props) {
                   ))}
                 </div>
               </div>
+              <div className="acitonButtons w-full flex justify-center">
+                <button
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-indigo-600 hover:to-blue-500 text-white font-semibold py-3 px-6 rounded-full shadow-md transition duration-300 ease-in-out items-center justify-center"
+                  type="submit"
+                >
+                  {props.pageMode} Data
+                </button>
+              </div>
+            </Form>
+          </div>
+        </PageWrapper>
+      ) : props?.type === "Services" ? (
+        <PageWrapper title={`${props?.pageMode} Services`}>
+          <div className="container mx-auto p-4 text-xl">
+            <Form onFinish={submitForm}>
+              <div className="grid grid-cols-1 my-2 sm:grid-cols-2 md:grid-cols-2 gap-6">
+                <div className="">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Title <span className="text-red-600">*</span>
+                  </label>
+                  <Input
+                    disabled={
+                      props?.pageMode === "Delete" || props?.pageMode === "View"
+                        ? true
+                        : false
+                    }
+                    required
+                    isMulti={false}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, service_name: e.target.value });
+                    }}
+                    isClearable
+                    options={projects?.length != 0 ? projects : []}
+                    isSearchable
+                    value={inputs?.service_name}
+                  />
+                </div>
+              </div>
+              {/* Upload Pictures */}
+              <div className="my-5">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Picture (Max size upto 10 MB){" "}
+                  <span className="text-red-600">*</span>
+                </label>
+                <Upload
+                  action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                  // action="/upload.do"
+                  listType="picture-card"
+                  multiple={false}
+                  name="imageArray"
+                  fileList={imageArray}
+                  beforeUpload={beforeUpload}
+                  maxCount={1}
+                  onChange={(e) => {
+                    setImageArray(e.fileList);
+                  }}
+                >
+                  <div>
+                    <PlusOutlined />
+                    <div
+                      style={{
+                        marginTop: 8,
+                      }}
+                    >
+                      Upload
+                    </div>
+                  </div>
+                </Upload>
+              </div>
+              {/* Pictures */}
+              {props?.pageMode !== "Add" ? (
+                <div className="my-5">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Pictures
+                  </label>
+                  <div className="w-full flex flex-row">
+                    {imageClone?.map((el, index) => (
+                      <div className="card" key={index}>
+                        <div className="flex h-60 max-w-md  justify-center">
+                          <img
+                            src={el?.url}
+                            alt="asd4e"
+                            className="object-contain"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
               <div className="acitonButtons w-full flex justify-center">
                 <button
                   className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-indigo-600 hover:to-blue-500 text-white font-semibold py-3 px-6 rounded-full shadow-md transition duration-300 ease-in-out items-center justify-center"
