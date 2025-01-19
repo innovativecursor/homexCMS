@@ -183,14 +183,10 @@ function ProductTable(props) {
       const result = await getAxiosCall("/fetchInquiries");
       setResult(result?.data);
     } else if (props?.type == "Projects" && props?.type) {
-      const result = await getAxiosCall("/fetchProjects");
-
+      const result = await getAxiosCall("/getproject");
       setResult(result?.data);
-    } else if (props?.type == "Careers") {
-      const result = await getAxiosCall("/careers");
-      setResult(result?.data?.data);
     } else if (props?.type == "Services") {
-      const result = await getAxiosCall("/fetchServices");
+      const result = await getAxiosCall("/getservice");
       setResult(result?.data);
     }
   };

@@ -11,4 +11,5 @@ export const Menu = {
     { text: "Update Services", link: "/updateServices" },
     { text: "Delete Services", link: "/deleteServices" },
   ],
+  achievement: [{ text: "Achievement's Page", link: "/achievements" }],
 };

@@ -8,6 +8,7 @@ const authenticateUser = require("../middleware/authenticateUser");
 const serviceController = require("../controllers/serviceController");
 const { apiLimiter } = require("../middleware/apiLimiter");
 const aboutController = require("../controllers/aboutController");
+const achievementController = require("../controllers/achievementController");
 
 // User routes
 router.post("/signup", userController.signup);
@@ -29,7 +30,7 @@ router.delete(
   inquiryController.deleteInquiry
 );
 //Projects
-router.get("/fetchProjects", projectController.getProjects);
+router.get("/getproject", projectController.getProjects);
 router.post(
   "/createProject",
   authenticateUser,
@@ -50,7 +51,7 @@ router.get("/aboutpage", aboutController.getAbout);
 router.put("/updateAbout/:id", authenticateUser, aboutController.updateAbout);
 
 //Services Controller
-router.get("/fetchServices", serviceController.getServices);
+router.get("/getservice", serviceController.getServices);
 router.post(
   "/createServices",
   authenticateUser,
@@ -65,5 +66,13 @@ router.delete(
   "/deleteServices/:id",
   authenticateUser,
   serviceController.deleteService
+);
+
+//Achievements
+router.get("/getachivements", achievementController.getAchievements);
+router.put(
+  "/updateAchievements/:id",
+  authenticateUser,
+  achievementController.updateAchievement
 );
 module.exports = router;

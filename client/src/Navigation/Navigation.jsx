@@ -24,7 +24,7 @@ import About from "../Components/about/About";
 import CreateService from "../Components/createService/CreateService";
 import UpdateService from "../Components/updateService/UpdateService";
 import DeleteService from "../Components/deleteService/DeleteService";
-
+import Achievements from "../Components/achievements/Achievements";
 function Navigation(props) {
   const location = useLocation();
   const navigateTo = useNavigate();
@@ -80,6 +80,7 @@ function Navigation(props) {
                 element={<ProductTable pageMode="Delete" type="Services" />}
               />
               <Route path="/deleteServicesinner" element={<DeleteService />} />
+              <Route path="/achievements" element={<Achievements />} />
             </Route>
             <Route path="*" element={<Robots />} />
           </Routes>
