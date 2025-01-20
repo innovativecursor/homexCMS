@@ -83,7 +83,6 @@ function ResetPassword() {
           width: "80%",
           maxWidth: "500px",
           padding: "20px",
-          backgroundColor: "#fff",
           borderRadius: "10px",
           boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
           backdropFilter: "blur(10px)",
@@ -91,19 +90,24 @@ function ResetPassword() {
           border: "1px solid rgba(255, 255, 255, 0.3)",
         }}
       >
-        <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <div
+          className="flex justify-center"
+          style={{ textAlign: "center", marginBottom: "20px" }}
+        >
           <img src={logo} alt="Logo" style={{ width: "150px" }} />
         </div>
         <div
           className="text-3xl mb-4 font-semibold"
-          style={{ textAlign: "center", color: "#000" }}
+          style={{ textAlign: "center", color: "#fff" }}
         >
           Change Password
         </div>
-        <div className="credentials card shadow-lg">
+        <div className="credentials card shadow-lg bg-homexbg">
           <div className="uName my-4">
             <div className="password my-4">
-              <div className="text-xl my-2 font-medium">New Password</div>
+              <div className="text-xl my-2 font-medium text-white">
+                New Password
+              </div>
               <Input.Password
                 placeholder="Password"
                 type="password"
@@ -115,7 +119,9 @@ function ResetPassword() {
               />
             </div>
             <div className="password my-4">
-              <div className="text-xl my-2 font-medium">Confirm Password</div>
+              <div className="text-xl my-2 font-medium text-white">
+                Confirm Password
+              </div>
               <Input.Password
                 placeholder="Password"
                 type="password"
