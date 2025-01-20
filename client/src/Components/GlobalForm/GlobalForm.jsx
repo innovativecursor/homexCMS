@@ -176,12 +176,29 @@ function GlobalForm(props) {
               setInputs({});
             }
           }
+          if (props.type === "Testimonials") {
+            let answer;
+            answer = await postAxiosCall("/createTestimonial", inputs);
+            if (answer) {
+              Swal.fire({
+                title: "Success",
+                text: answer?.message,
+                icon: "success",
+                confirmButtonText: "Great!",
+                allowOutsideClick: false,
+              }).then(() => {
+                window.location.reload(true);
+              });
+              setInputs({});
+            }
+          }
           break;
         case "Update":
           if (
             imageArray?.length == 0 &&
             imageClone?.length == 0 &&
-            props?.type != "Achievements"
+            props?.type != "Achievements" &&
+            props?.type != "Testimonials"
           ) {
             Swal.fire({
               title: "error",
@@ -285,6 +302,25 @@ function GlobalForm(props) {
               });
             }
           }
+          if (props.type === "Testimonials") {
+            const updatedResult = await updateAxiosCall(
+              "/updateTestimonial",
+              props?.record?.testimonial_id,
+              inputs
+            );
+            if (updatedResult) {
+              Swal.fire({
+                title: "Success",
+                text: updatedResult?.message,
+                icon: "success",
+                confirmButtonText: "Great!",
+                allowOutsideClick: false,
+              }).then(() => {
+                setInputs();
+                NavigateTo("/updateTestimonial");
+              });
+            }
+          }
           break;
         case "Delete":
           Swal.fire({
@@ -347,6 +383,23 @@ function GlobalForm(props) {
         });
         setInputs();
         NavigateTo("/deleteServices");
+      }
+    }
+    if (props?.type === "Testimonials" && props?.type) {
+      answer = await deleteAxiosCall(
+        "/deleteTestimonial",
+        props?.record?.testimonial_id
+      );
+      if (answer) {
+        Swal.fire({
+          title: "Success",
+          text: answer?.message,
+          icon: "success",
+          confirmButtonText: "Great!",
+          allowOutsideClick: false,
+        });
+        setInputs();
+        NavigateTo("/deleteTestimonial");
       }
     }
   };
@@ -1178,6 +1231,191 @@ function GlobalForm(props) {
                   {props.pageMode} Data
                 </button>
               </div>
+            </Form>
+          </div>
+        </PageWrapper>
+      ) : props?.type === "Testimonials" ? (
+        <PageWrapper title={`${props?.pageMode} Testimonials`}>
+          <div className="container mx-auto p-4 text-xl">
+            <Form onFinish={submitForm}>
+              <div className="grid grid-cols-1 my-2 sm:grid-cols-2 md:grid-cols-2 gap-6">
+                <div className="">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Client's Name <span className="text-red-600">*</span>
+                  </label>
+                  <Input
+                    disabled={
+                      props?.pageMode === "Delete" || props?.pageMode === "View"
+                        ? true
+                        : false
+                    }
+                    required
+                    isMulti={false}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, reviewer_name: e.target.value });
+                    }}
+                    isClearable
+                    options={projects?.length != 0 ? projects : []}
+                    isSearchable
+                    value={inputs?.reviewer_name}
+                  />
+                </div>
+                <div className="">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Client's location <span className="text-red-600">*</span>
+                  </label>
+                  <Input
+                    disabled={
+                      props?.pageMode === "Delete" || props?.pageMode === "View"
+                        ? true
+                        : false
+                    }
+                    isMulti={false}
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        reviewer_location: e.target.value,
+                      });
+                    }}
+                    isClearable
+                    options={projects?.length != 0 ? projects : []}
+                    isSearchable
+                    required
+                    value={inputs?.reviewer_location}
+                  />
+                </div>
+                <div className="">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Client's Rating (Type a number from 1-5){" "}
+                    <span className="text-red-600">*</span>
+                  </label>
+                  <InputNumber
+                    min={1}
+                    max={5}
+                    required
+                    disabled={
+                      props?.pageMode === "Delete" || props?.pageMode === "View"
+                        ? true
+                        : false
+                    }
+                    isMulti={false}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, client_rating: e });
+                    }}
+                    isClearable
+                    options={projects?.length != 0 ? projects : []}
+                    isSearchable
+                    value={inputs?.client_rating}
+                  />
+                </div>
+              </div>
+              <div className="my-5">
+                <label className="block text-sm font-medium text-gray-700">
+                  Review <span className="text-red-600">*</span>
+                </label>
+                <TextArea
+                  disabled={props?.pageMode === "Delete" ? true : false}
+                  type="text"
+                  id="review"
+                  name="review"
+                  required
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({ ...inputs, [e.target.name]: e.target.value });
+                  }}
+                  value={inputs?.review}
+                />
+              </div>
+              {/* Upload Pictures */}
+              {props.pageMode === "Add" || props.pageMode === "Update" ? (
+                <div className="my-5">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Upload Pictures (Max size upto 10 MB){" "}
+                    <span className="text-red-600">*</span>
+                  </label>
+                  <Upload
+                    action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                    // action="/upload.do"
+                    listType="picture-card"
+                    multiple={false}
+                    beforeUpload={beforeUpload}
+                    name="pictures"
+                    fileList={imageArray}
+                    maxCount={1}
+                    onChange={(e) => {
+                      setImageArray(e.fileList);
+                    }}
+                  >
+                    <div>
+                      <PlusOutlined />
+                      <div
+                        style={{
+                          marginTop: 8,
+                        }}
+                      >
+                        Upload
+                      </div>
+                    </div>
+                  </Upload>
+                </div>
+              ) : (
+                ""
+              )}
+              {/* Pictures */}
+              {props?.pageMode !== "Add" ? (
+                <div className="my-5">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Pictures
+                  </label>
+                  <div className="w-full flex flex-row">
+                    {imageClone?.map((el, index) => (
+                      <div className="card" key={index}>
+                        <div className="flex h-60 justify-center">
+                          <img
+                            src={el?.url}
+                            alt="asd4e"
+                            className="object-contain"
+                          />
+                        </div>
+                        {props.pageMode !== "View" &&
+                        props.pageMode !== "Delete" ? (
+                          <div className="flex flex-row justify-center items-end">
+                            <button
+                              className="my-4 text-black p-4 font-semibold bg-orange-400 hover:text-white rounded-lg"
+                              onClick={() => deleteModal(index)}
+                              type="button"
+                            >
+                              Delete Picture
+                            </button>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+              {props.pageMode === "View" ? (
+                ""
+              ) : (
+                <div className="acitonButtons w-full flex justify-center">
+                  <button
+                    className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-indigo-600 hover:to-blue-500 text-white font-semibold py-3 px-6 rounded-full shadow-md transition duration-300 ease-in-out items-center justify-center"
+                    type="submit"
+                  >
+                    {props.pageMode} Data
+                  </button>
+                </div>
+              )}
             </Form>
           </div>
         </PageWrapper>

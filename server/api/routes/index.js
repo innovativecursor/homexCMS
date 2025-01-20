@@ -9,6 +9,7 @@ const serviceController = require("../controllers/serviceController");
 const { apiLimiter } = require("../middleware/apiLimiter");
 const aboutController = require("../controllers/aboutController");
 const achievementController = require("../controllers/achievementController");
+const testimonialController = require("../controllers/testimonialController");
 
 // User routes
 router.post("/signup", userController.signup);
@@ -74,5 +75,22 @@ router.put(
   "/updateAchievements/:id",
   authenticateUser,
   achievementController.updateAchievement
+);
+// Testimonials
+router.get("/gettestimonials", testimonialController.getTestimonials);
+router.post(
+  "/createTestimonial",
+  authenticateUser,
+  testimonialController.createTestimonial
+);
+router.put(
+  "/updateTestimonial/:id",
+  authenticateUser,
+  testimonialController.updateTestimonial
+);
+router.delete(
+  "/deleteTestimonial/:id",
+  authenticateUser,
+  testimonialController.deleteTestimonial
 );
 module.exports = router;

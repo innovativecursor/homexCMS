@@ -58,22 +58,22 @@ function ProductTable(props) {
       ),
     },
   ];
-  const columns = [
+  const testimonials_col = [
     {
-      title: "Prop ID",
-      dataIndex: "prop_id",
-      key: "prop_id",
+      title: "Client's Name",
+      dataIndex: "reviewer_name",
+      key: "reviewer_name",
       fixed: "left",
     },
     {
-      title: "Property Name",
-      dataIndex: "station_number",
-      key: "station_number",
+      title: "Client Location",
+      dataIndex: "reviewer_location",
+      key: "reviewer_location",
     },
     {
-      title: "Location",
-      dataIndex: "location",
-      key: "location",
+      title: "Client Rating",
+      dataIndex: "client_rating",
+      key: "client_rating",
     },
   ];
 
@@ -188,6 +188,9 @@ function ProductTable(props) {
     } else if (props?.type == "Services") {
       const result = await getAxiosCall("/getservice");
       setResult(result?.data);
+    } else if (props?.type == "Testimonials") {
+      const result = await getAxiosCall("/gettestimonials");
+      setResult(result?.data);
     }
   };
   const renderTable = () => {
@@ -259,6 +262,32 @@ function ProductTable(props) {
                       props.pageMode === "Delete"
                         ? "/deleteServicesinner"
                         : "/updateServicesinner",
+                      { state: record }
+                    );
+                  },
+                };
+              }}
+              scroll={{
+                x: 1000,
+                y: 1500,
+              }}
+            />
+          </PageWrapper>
+        );
+      case "Testimonials":
+        return (
+          <PageWrapper title={`${props.pageMode} Testimonials`}>
+            <Table
+              columns={testimonials_col}
+              dataSource={result}
+              size="large"
+              onRow={(record, rowIndex) => {
+                return {
+                  onClick: () => {
+                    navigateTo(
+                      props.pageMode === "Delete"
+                        ? "/deleteTestimonialinner"
+                        : "/updateTestimonialinner",
                       { state: record }
                     );
                   },

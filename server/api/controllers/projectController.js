@@ -55,7 +55,6 @@ exports.createProject = async (req, res) => {
       message: "Project Created Successfully!",
     });
   } catch (error) {
-    await project.destroy();
     res.status(500).json({ message: error?.message, error: error.message });
   }
 };

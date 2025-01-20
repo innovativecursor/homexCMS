@@ -12,4 +12,9 @@ export const Menu = {
     { text: "Delete Services", link: "/deleteServices" },
   ],
   achievement: [{ text: "Achievement's Page", link: "/achievements" }],
+  testimonials: [
+    { text: "Create Testimonials", link: "/createTestimonial" },
+    { text: "Update Testimonials", link: "/updateTestimonial" },
+    { text: "Delete Testimonials", link: "/deleteTestimonial" },
+  ],
 };

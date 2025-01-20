@@ -25,6 +25,9 @@ import CreateService from "../Components/createService/CreateService";
 import UpdateService from "../Components/updateService/UpdateService";
 import DeleteService from "../Components/deleteService/DeleteService";
 import Achievements from "../Components/achievements/Achievements";
+import CreateTestimonials from "../Components/testimonials/CreateTestimonials";
+import UpdateTestimonial from "../Components/updateTestimonial/UpdateTestimonial";
+import DeleteTestimonials from "../Components/DeleteTestimonials/DeleteTestimonials";
 function Navigation(props) {
   const location = useLocation();
   const navigateTo = useNavigate();
@@ -81,6 +84,26 @@ function Navigation(props) {
               />
               <Route path="/deleteServicesinner" element={<DeleteService />} />
               <Route path="/achievements" element={<Achievements />} />
+              <Route
+                path="/createTestimonial"
+                element={<CreateTestimonials />}
+              />
+              <Route
+                path="/updateTestimonial"
+                element={<ProductTable pageMode="Update" type="Testimonials" />}
+              />
+              <Route
+                path="/updateTestimonialinner"
+                element={<UpdateTestimonial />}
+              />
+              <Route
+                path="/deleteTestimonial"
+                element={<ProductTable pageMode="Delete" type="Testimonials" />}
+              />
+              <Route
+                path="/deleteTestimonialinner"
+                element={<DeleteTestimonials />}
+              />
             </Route>
             <Route path="*" element={<Robots />} />
           </Routes>
