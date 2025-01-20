@@ -28,6 +28,10 @@ import Achievements from "../Components/achievements/Achievements";
 import CreateTestimonials from "../Components/testimonials/CreateTestimonials";
 import UpdateTestimonial from "../Components/updateTestimonial/UpdateTestimonial";
 import DeleteTestimonials from "../Components/DeleteTestimonials/DeleteTestimonials";
+import UpdateStaff from "../Components/UpdateStaff/UpdateStaff";
+import AddStaff from "../Components/AddStaff/AddStaff";
+import DeleteStaff from "../Components/DeleteStaff/DeleteStaff";
+
 function Navigation(props) {
   const location = useLocation();
   const navigateTo = useNavigate();
@@ -104,6 +108,17 @@ function Navigation(props) {
                 path="/deleteTestimonialinner"
                 element={<DeleteTestimonials />}
               />
+              <Route path="/createStaff" element={<AddStaff />} />
+              <Route
+                path="/updateStaff"
+                element={<ProductTable pageMode="Update" type="Staff" />}
+              />
+              <Route path="/updateStaffinner" element={<UpdateStaff />} />
+              <Route
+                path="/deleteStaff"
+                element={<ProductTable pageMode="Delete" type="Staff" />}
+              />
+              <Route path="/deleteStaffinner" element={<DeleteStaff />} />
             </Route>
             <Route path="*" element={<Robots />} />
           </Routes>

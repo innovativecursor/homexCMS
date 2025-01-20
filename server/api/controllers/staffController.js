@@ -1,44 +1,70 @@
-const Project = require("../models/Projects");
 const cloudinary = require("../../utils/cloudinary");
-const { formattedResult, formattedThumbnails } = require("../utils/Consts");
-const Joi = require("joi");
-// Define Joi schema
-const projectSchema = Joi.object({
-  project_name: Joi.string().required(),
-  location: Joi.string().optional().allow(""),
-  keyFeatures: Joi.string().optional().allow(""),
-  executionTime: Joi.string().optional().allow(""),
-  turnOver: Joi.string().optional().allow(""),
-  project_desc: Joi.string().optional().allow(""),
-  pictures: Joi.array().required(), // Assuming pictures are base64 encoded strings
-});
-exports.getProjects = async (req, res) => {
+const Staff = require("../models/staff");
+const { formattedResult } = require("../utils/Consts");
+
+// Joi validation schema
+
+// Get all staff
+exports.getStaff = async (req, res) => {
   try {
-    const projects = await Project.findAll({});
-    const result = formattedResult(projects);
+    const staff = await Staff.findAll({});
+    const result = formattedResult(staff);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: error.message, error: error.message });
   }
 };
-exports.createProject = async (req, res) => {
-  const { error } = projectSchema.validate(req.body);
-  if (error) {
-    return res.status(400).json({ message: error.details[0]?.message });
-  }
-  let project;
+// Post a new event
+// exports.postStaff = async (req, res) => {
+//   // Validate the incoming request data
+//   const { error } = validateStaff(req.body);
+//   if (error) {
+//     return res.status(400).json({
+//       message: "Please Fill in all the Fields",
+//       error: error.details[0].message,
+//     });
+//   }
+
+//   try {
+//     const { staff_name, staff_position, staff_featured, pictures } = req.body;
+
+//     // Create the event in the database
+//     const staff = await Staff.create({
+//       staff_name,
+//       staff_position,
+//       staff_featured,
+//       pictures: [],
+//     });
+
+//     const folderName = `${process.env.CLOUDINARY_DB}/staff_${staff.staff_id}`;
+
+//     // Upload pictures to Cloudinary
+//     const uploadPromises = pictures?.map((base64Data) => {
+//       return cloudinary.uploader.upload(base64Data, {
+//         folder: folderName,
+//       });
+//     });
+
+//     const uploadedImages = await Promise.all(uploadPromises);
+
+//     // Update the staff with the uploaded images
+//     await staff.update({ pictures: uploadedImages });
+
+//     res.status(201).json({ message: "Staff created successfully", staff });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message, error: error.message });
+//   }
+// };
+exports.postStaff = async (req, res) => {
+  let staff;
   try {
-    project = await Project.create({
-      project_name: req.body?.project_name,
-      location: req.body?.location,
-      keyFeatures: req.body?.keyFeatures,
-      executionTime: req.body?.executionTime,
-      turnOver: req.body?.turnOver,
-      project_desc: req.body?.project_desc,
+    staff = await Staff.create({
+      staff_name: req.body?.staff_name,
+      staff_position: req.body?.staff_position,
       pictures: [],
     });
-    // Generate a unique folder name using the project ID
-    const folderName = `${process.env.CLOUDINARY_DB}/Project_${project?.project_id}`;
+    // Generate a unique folder name using the staff ID
+    const folderName = `${process.env.CLOUDINARY_DB}/Staff_${staff?.staff_id}`;
 
     // Upload pictures to Cloudinary
     const uploadPromises = req.body?.pictures?.map((base64Data) => {
@@ -49,27 +75,26 @@ exports.createProject = async (req, res) => {
 
     const uploadedImages = await Promise.all(uploadPromises || []);
 
-    // Update the project with the uploaded images
-    await project.update({ pictures: uploadedImages });
+    // Update the staff with the uploaded images
+    await staff.update({ pictures: uploadedImages });
     res.status(201).json({
-      message: "Project Created Successfully!",
+      message: "Staff Created Successfully!",
     });
   } catch (error) {
     res.status(500).json({ message: error?.message, error: error.message });
   }
 };
-
-exports.updateProject = async (req, res) => {
+exports.updateStaff = async (req, res) => {
   const { id } = req.params;
   try {
     const updatedData = req.body;
 
-    const proj = await Project.findByPk(id);
-    if (!proj) {
-      return res.status(404).json({ message: "Project not found" });
+    const staff = await Staff.findByPk(id);
+    if (!staff) {
+      return res.status(404).json({ message: "Staff not found" });
     }
 
-    const folderName = `${process.env.CLOUDINARY_DB}/Project_${id}`;
+    const folderName = `${process.env.CLOUDINARY_DB}/Staff_${id}`;
 
     const cloudinaryFiles = await cloudinary.api.resources({
       type: "upload",
@@ -104,25 +129,25 @@ exports.updateProject = async (req, res) => {
 
     updatedData.pictures = allImages;
 
-    await proj.update(updatedData);
+    await staff.update(updatedData);
 
-    res.status(200).json({ message: "Project updated successfully" });
+    res.status(200).json({ message: "Staff updated successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message, error: error.message });
   }
 };
 
-exports.deleteProject = async (req, res) => {
+exports.deleteStaff = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const proj = await Project.findByPk(id);
-    if (!proj) {
-      return res.status(404).json({ message: "Project not found" });
+    const staff = await Staff.findByPk(id);
+    if (!staff) {
+      return res.status(404).json({ message: "Staff not found" });
     }
 
     // Extract the pictures array from the testimonial
-    const { pictures } = proj;
+    const { pictures } = staff;
     // If there are pictures, proceed with deleting them from Cloudinary
     if (pictures && pictures.length > 0) {
       const folderName = pictures[0]?.folder;
@@ -150,7 +175,7 @@ exports.deleteProject = async (req, res) => {
     }
 
     // Delete the testimonial from the database
-    await proj.destroy();
+    await staff.destroy();
 
     res.status(200).json({ message: "Testimonial deleted successfully" });
   } catch (error) {

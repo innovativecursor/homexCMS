@@ -17,4 +17,9 @@ export const Menu = {
     { text: "Update Testimonials", link: "/updateTestimonial" },
     { text: "Delete Testimonials", link: "/deleteTestimonial" },
   ],
+  Staff: [
+    { text: "Create Staff", link: "/createStaff" },
+    { text: "Update Staff", link: "/updateStaff" },
+    { text: "Delete Staff", link: "/deleteStaff" },
+  ],
 };

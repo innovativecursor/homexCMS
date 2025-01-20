@@ -76,7 +76,19 @@ function ProductTable(props) {
       key: "client_rating",
     },
   ];
-
+  const staff_col = [
+    {
+      title: "Staff Name",
+      dataIndex: "staff_name",
+      key: "staff_name",
+      fixed: "left",
+    },
+    {
+      title: "Staff Designation",
+      dataIndex: "staff_position",
+      key: "staff_position",
+    },
+  ];
   const services_col = [
     {
       title: "Service Name",
@@ -191,6 +203,9 @@ function ProductTable(props) {
     } else if (props?.type == "Testimonials") {
       const result = await getAxiosCall("/gettestimonials");
       setResult(result?.data);
+    } else if (props?.type == "Staff") {
+      const result = await getAxiosCall("/getteam");
+      setResult(result?.data);
     }
   };
   const renderTable = () => {
@@ -288,6 +303,32 @@ function ProductTable(props) {
                       props.pageMode === "Delete"
                         ? "/deleteTestimonialinner"
                         : "/updateTestimonialinner",
+                      { state: record }
+                    );
+                  },
+                };
+              }}
+              scroll={{
+                x: 1000,
+                y: 1500,
+              }}
+            />
+          </PageWrapper>
+        );
+      case "Staff":
+        return (
+          <PageWrapper title={`${props.pageMode} Staff`}>
+            <Table
+              columns={staff_col}
+              dataSource={result}
+              size="large"
+              onRow={(record, rowIndex) => {
+                return {
+                  onClick: () => {
+                    navigateTo(
+                      props.pageMode === "Delete"
+                        ? "/deleteStaffinner"
+                        : "/updateStaffinner",
                       { state: record }
                     );
                   },

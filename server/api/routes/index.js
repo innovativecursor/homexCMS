@@ -10,6 +10,7 @@ const { apiLimiter } = require("../middleware/apiLimiter");
 const aboutController = require("../controllers/aboutController");
 const achievementController = require("../controllers/achievementController");
 const testimonialController = require("../controllers/testimonialController");
+const staffController = require("../controllers/staffController");
 
 // User routes
 router.post("/signup", userController.signup);
@@ -92,5 +93,15 @@ router.delete(
   "/deleteTestimonial/:id",
   authenticateUser,
   testimonialController.deleteTestimonial
+);
+
+// Staff routes
+router.get("/getteam", staffController.getStaff);
+router.post("/createStaff", authenticateUser, staffController.postStaff);
+router.put("/updateStaff/:id", authenticateUser, staffController.updateStaff);
+router.delete(
+  "/deleteStaff/:id",
+  authenticateUser,
+  staffController.deleteStaff
 );
 module.exports = router;
