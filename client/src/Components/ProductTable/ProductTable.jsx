@@ -183,12 +183,8 @@ function ProductTable(props) {
     }
   };
   useEffect(() => {
-    if (!props.filteredProducts) {
-      answer();
-    } else {
-      setResult(props?.filteredProducts);
-    }
-  }, [props]);
+    answer();
+  }, [props?.type]);
 
   const answer = async () => {
     if (props?.type == "Inquiries" && props?.type) {
@@ -201,6 +197,7 @@ function ProductTable(props) {
       const result = await getAxiosCall("/getservice");
       setResult(result?.data);
     } else if (props?.type == "Testimonials") {
+      debugger;
       const result = await getAxiosCall("/gettestimonials");
       setResult(result?.data);
     } else if (props?.type == "Staff") {
