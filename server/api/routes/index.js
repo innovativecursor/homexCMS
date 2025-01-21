@@ -18,6 +18,7 @@ router.post("/login", userController.login);
 router.post("/forgotPassword", userController.forgotPassword);
 router.post("/resetPassword", userController.resetPassword);
 router.get("/users", authenticateUser, userController.allUsers);
+router.delete("/deleteUser/:id", authenticateUser, userController.deleteUser);
 
 // Inquiry Routes
 router.get(

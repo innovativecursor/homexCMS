@@ -16,15 +16,7 @@ app.use(compression({ level: 9 })); // Used to compress API responses
 
 const options = {
   credentials: true,
-  origin: [
-    "http://localhost:3000",
-    "http://localhost:3004",
-    "https://dlmrealtyandconstructioncorp.com",
-    "https://www.dlmrealtyandconstructioncorp.com",
-    "https://admin.dlmrealtyandconstructioncorp.com",
-    "https://www.admin.dlmrealtyandconstructioncorp.com",
-    // "http://localhost:8080",
-  ],
+  origin: ["http://localhost:3000", "http://localhost:3004"],
 };
 app.use("*", cors());
 app.use(

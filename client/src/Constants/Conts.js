@@ -22,4 +22,5 @@ export const Menu = {
     { text: "Update Staff", link: "/updateStaff" },
     { text: "Delete Staff", link: "/deleteStaff" },
   ],
+  Users: [{ text: "Create Users", link: "/createUsers" }],
 };

@@ -12,13 +12,14 @@ const { Op } = require("sequelize");
 exports.signup = async (req, res) => {
   const { first_name, last_name, email, password, role_id, code } = req.body;
   try {
+    if (code !== 8050) {
+      return res.status(401).json({ message: "Unable to register!" });
+    }
     const findEmail = await User.findOne({ where: { email } });
     if (findEmail) {
       return res.status(401).json({ message: "User already exists" });
     }
-    if (code !== 8050) {
-      return res.status(401).json({ message: "Unable to register!" });
-    }
+
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 8);
     await User.create({
@@ -135,7 +136,26 @@ exports.forgotPassword = async (req, res) => {
     });
   }
 };
-
+exports.deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(401).json({ message: "No ID found" });
+    } else if (id) {
+      const findUser = await User.findOne({ user_id: id });
+      if (!findUser) {
+        return res.status(400).json({ message: "No User Found" });
+      } else {
+        const result = await findUser.destroy();
+        if (result) {
+          return res.status(200).json({ message: "User Deleted Successfully" });
+        }
+      }
+    }
+  } catch (error) {
+    return res.status(500).status({ message: error?.message });
+  }
+};
 // Method to change password
 exports.resetPassword = async (req, res) => {
   const { resetToken, newPassword } = req.body;

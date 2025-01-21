@@ -31,6 +31,7 @@ import DeleteTestimonials from "../Components/DeleteTestimonials/DeleteTestimoni
 import UpdateStaff from "../Components/UpdateStaff/UpdateStaff";
 import AddStaff from "../Components/AddStaff/AddStaff";
 import DeleteStaff from "../Components/DeleteStaff/DeleteStaff";
+import CreateUsers from "../Components/createUsers/CreateUsers";
 
 function Navigation(props) {
   const location = useLocation();
@@ -119,6 +120,7 @@ function Navigation(props) {
                 element={<ProductTable pageMode="Delete" type="Staff" />}
               />
               <Route path="/deleteStaffinner" element={<DeleteStaff />} />
+              <Route path="/createUsers" element={<CreateUsers />} />
             </Route>
             <Route path="*" element={<Robots />} />
           </Routes>
