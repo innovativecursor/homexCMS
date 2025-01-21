@@ -142,7 +142,7 @@ exports.deleteUser = async (req, res) => {
     if (!id) {
       return res.status(401).json({ message: "No ID found" });
     } else if (id) {
-      const findUser = await User.findOne({ user_id: id });
+      const findUser = await User.findByPk(id);
       if (!findUser) {
         return res.status(400).json({ message: "No User Found" });
       } else {

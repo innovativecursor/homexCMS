@@ -120,7 +120,9 @@ function Navigation(props) {
                 element={<ProductTable pageMode="Delete" type="Staff" />}
               />
               <Route path="/deleteStaffinner" element={<DeleteStaff />} />
-              <Route path="/createUsers" element={<CreateUsers />} />
+              {props?.userDetails?.role_id > 4 && (
+                <Route path="/createUsers" element={<CreateUsers />} />
+              )}
             </Route>
             <Route path="*" element={<Robots />} />
           </Routes>
@@ -137,6 +139,7 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
   return {
     loggedIn: state?.universalReducer?.isLoggedIn,
+    userDetails: state.universalReducer,
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Navigation);

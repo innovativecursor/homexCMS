@@ -42,7 +42,7 @@ function Home(props) {
           dataIndex: "",
           key: "x",
           render: (text, record) => (
-            <Button onClick={() => deleteRes(record?.role_id)}>Delete</Button>
+            <Button onClick={() => deleteRes(record)}>Delete</Button>
           ),
         },
       ];
@@ -81,11 +81,10 @@ function Home(props) {
   const navigateTo = useNavigate();
   const fetchRes = async () => {
     const res = await getAxiosCall("/users");
-
     setResults(res.data?.users);
   };
-  const deleteRes = async (id) => {
-    if (props?.userDetails?.role_id === id) {
+  const deleteRes = async (record) => {
+    if (props?.userDetails?.role_id === record?.role_id) {
       Swal.fire({
         title: "error",
         text: "You Cannot Delete Yourself",
@@ -96,7 +95,7 @@ function Home(props) {
       return;
     }
     if (props?.userDetails?.role_id > 4) {
-      deleteUser(props?.userDetails?.role_id);
+      deleteUser(Number(record?.user_id));
     }
   };
   const deleteUser = async (id) => {
@@ -111,8 +110,8 @@ function Home(props) {
       }).then(async (result) => {
         if (result.isConfirmed) {
           await deleteAxiosCall("/deleteUser", id);
-          navigateTo("/home");
           message.success("User deleted successfully");
+          window.location.reload();
         }
       });
     } catch (error) {
