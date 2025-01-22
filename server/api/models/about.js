@@ -32,5 +32,6 @@ const About = sequelize.define("About", {
   },
   about_image1: { type: DataTypes.JSON, allowNull: false },
   about_image2: { type: DataTypes.JSON, allowNull: false },
+  about_image3: { type: DataTypes.JSON, allowNull: false },
 });
 module.exports = About;

@@ -34,11 +34,13 @@ function GlobalForm(props) {
   const [loading, setLoading] = useState(false);
   const [imageArray, setImageArray] = useState([]);
   const [imageArray2, setImageArray2] = useState([]);
+  const [imageArray3, setImageArray3] = useState([]);
   const [inputs, setInputs] = useState({});
   const [location, setLocation] = useState({});
   const [stationOptions, setStationOptions] = useState();
   const [imageClone, setImageClone] = useState(props?.record?.pictures || []);
   const [imageClone2, setImageClone2] = useState([]);
+  const [imageClone3, setImageClone3] = useState([]);
   const [menuOptions, setMenuOptions] = useState([]);
   const [projects, setProjects] = useState();
   const [check, setcheck] = useState(false);
@@ -57,6 +59,7 @@ function GlobalForm(props) {
       setInputs(fetchAboutDetails?.data);
       setImageClone(fetchAboutDetails?.data?.about_image1);
       setImageClone2(fetchAboutDetails?.data?.about_image2);
+      setImageClone3(fetchAboutDetails?.data?.about_image3);
     }
     if (props?.type === "Achievements") {
       const fetchAboutDetails = await getAxiosCall("/getachivements");
@@ -120,6 +123,18 @@ function GlobalForm(props) {
             about_image2: dummyObj2?.about_image2,
           });
           setInputs({ ...inputs, about_image2: asd });
+          B64Array = [];
+        }
+        if (imageArray3?.length !== 0 || imageClone3 === undefined) {
+          for (let i = 0; i < imageArray3.length; i++) {
+            const base64String = await getBase64(imageArray3[i]?.originFileObj);
+            B64Array.push(base64String);
+          }
+          let dummyObj3 = { about_image3: [...B64Array] };
+          asd = Object.assign(inputs, {
+            about_image3: dummyObj3?.about_image3,
+          });
+          setInputs({ ...inputs, about_image3: asd });
           B64Array = [];
         }
       }
@@ -212,7 +227,7 @@ function GlobalForm(props) {
         case "Update":
           if (
             imageArray?.length == 0 &&
-            imageClone?.length == 0 &&
+            (imageClone?.length == 0 || imageClone?.length == undefined) &&
             props?.type != "Achievements" &&
             props?.type != "Testimonials"
           ) {
@@ -225,14 +240,17 @@ function GlobalForm(props) {
             });
             return;
           }
+
           if (
             props?.type === "About" &&
             imageArray2?.length == 0 &&
-            imageClone2?.length == 0
+            (imageClone2?.length == 0 || imageClone2?.length == undefined) &&
+            imageArray3?.length == 0 &&
+            (imageClone3?.length == 0 || imageClone3?.length == undefined)
           ) {
             Swal.fire({
               title: "error",
-              text: "Add at least one Picture in About Image 2 to proceed!",
+              text: "Please add all required Images",
               icon: "error",
               confirmButtonText: "Alright!",
               allowOutsideClick: false,
@@ -922,20 +940,6 @@ function GlobalForm(props) {
                           className="object-contain"
                         />
                       </div>
-                      {/* {props.pageMode !== "View" &&
-                      props.pageMode !== "Delete" ? (
-                        <div className="flex flex-row justify-center items-end">
-                          <button
-                            className="my-4 text-black p-4 font-semibold bg-orange-400 hover:text-white rounded-lg"
-                            onClick={() => deleteModal(index)}
-                            type="button"
-                          >
-                            Delete Picture
-                          </button>
-                        </div>
-                      ) : (
-                        ""
-                      )} */}
                     </div>
                   ))}
                 </div>
@@ -1006,6 +1010,62 @@ function GlobalForm(props) {
                       ) : (
                         ""
                       )} */}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* Upload Pictures 3 */}
+              <div className="my-5">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  About Image 3 (Max size upto 10 MB){" "}
+                  <span className="text-red-600">*</span>
+                </label>
+                <Upload
+                  action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                  // action="/upload.do"
+                  listType="picture-card"
+                  multiple={false}
+                  name="imageArray3"
+                  fileList={imageArray3}
+                  maxCount={1}
+                  beforeUpload={beforeUpload}
+                  onChange={(e) => {
+                    setImageArray3(e.fileList);
+                  }}
+                >
+                  <div>
+                    <PlusOutlined />
+                    <div
+                      style={{
+                        marginTop: 8,
+                      }}
+                    >
+                      Upload
+                    </div>
+                  </div>
+                </Upload>
+              </div>
+              {/* Pictures */}
+              <div className="my-5">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Pictures
+                </label>
+                <div className="w-full flex flex-row">
+                  {imageClone3?.map((el, index) => (
+                    <div className="card" key={index}>
+                      <div className="flex h-60 max-w-md justify-center">
+                        <img
+                          src={el?.url}
+                          alt="asd4e"
+                          className="object-contain"
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>

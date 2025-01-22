@@ -13,6 +13,7 @@ const aboutSchema = Joi.object({
   our_values4: Joi.string().required(),
   about_image1: Joi.array().required(),
   about_image2: Joi.array().required(),
+  about_image3: Joi.array().required(),
 });
 exports.getAbout = async (req, res) => {
   try {
@@ -42,6 +43,7 @@ exports.updateAbout = async (req, res) => {
         our_values4: updatedData.our_values4,
         about_image1: [],
         about_image2: [],
+        about_image3: [],
       });
     }
 
@@ -81,6 +83,7 @@ exports.updateAbout = async (req, res) => {
     // Process about_image1 and about_image2 fields
     updatedData.about_image1 = await processImageField("about_image1");
     updatedData.about_image2 = await processImageField("about_image2");
+    updatedData.about_image3 = await processImageField("about_image3");
     await about.update(updatedData);
 
     res.status(200).json({ message: "About content updated successfully" });

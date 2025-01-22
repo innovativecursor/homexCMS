@@ -197,7 +197,6 @@ function ProductTable(props) {
       const result = await getAxiosCall("/getservice");
       setResult(result?.data);
     } else if (props?.type == "Testimonials") {
-      debugger;
       const result = await getAxiosCall("/gettestimonials");
       setResult(result?.data);
     } else if (props?.type == "Staff") {
