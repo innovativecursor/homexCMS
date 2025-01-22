@@ -2,9 +2,10 @@ require("dotenv").config();
 
 const express = require("express");
 const morgan = require("morgan");
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const routes = require("./api/routes");
+const fs = require("fs");
+const path = require("path");
 const cors = require("cors");
 var cookieParser = require("cookie-parser");
 const sequelize = require("./api/config/database");
@@ -19,6 +20,22 @@ const options = {
   origin: ["http://localhost:3000", "http://localhost:3004"],
 };
 app.use("*", cors());
+// Platform-specific log directory
+const logDirectory =
+  process.platform === "win32" || process.platform === "win64"
+    ? "C:\\HomexLogs"
+    : "/var/www/homexCMS";
+
+// Ensure the log directory exists
+fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+
+// Create a write stream for logging
+const accessLogStream = fs.createWriteStream(
+  path.join(logDirectory, "access.log"),
+  { flags: "a" }
+);
+// Setup the logger to write to a file
+app.use(morgan("combined", { stream: accessLogStream }));
 app.use(
   bodyParser.urlencoded({
     extended: false,
