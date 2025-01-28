@@ -127,9 +127,10 @@ function Login(props) {
               type="text"
               size="large"
               onChange={(e) => {
-                setEmail(e.target.value);
+                setEmail(e.target.value?.trimEnd());
               }}
               style={{ borderRadius: "4px" }}
+              value={email}
             />
           </div>
 
@@ -176,12 +177,13 @@ function Login(props) {
                   type="password"
                   size="large"
                   onChange={(e) => {
-                    setPassword(e.target.value);
+                    setPassword(e.target.value?.trimEnd());
                   }}
                   iconRender={(visible) =>
                     visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                   }
                   style={{ borderRadius: "4px" }}
+                  value={password}
                 />
               </div>
               <div className="flex justify-around items-center flex-row mt-6 gap-5">
