@@ -2,7 +2,7 @@ const { Sequelize } = require("sequelize");
 
 // Initialize Sequelize with your database credentials
 const sequelize = new Sequelize(
-  "homexCMS",
+  process.env.NODE_ENV == "development" ? "homex" : "homexCMS",
   "root",
   process.env.NODE_ENV == "development" ? "root" : "theWeekend@4166",
   {
