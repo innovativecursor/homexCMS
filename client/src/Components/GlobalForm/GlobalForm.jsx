@@ -323,7 +323,7 @@ function GlobalForm(props) {
               1,
               {
                 ...inputs,
-                isActive: check,
+                // isActive: check,
               }
             );
             if (updatedResult) {
