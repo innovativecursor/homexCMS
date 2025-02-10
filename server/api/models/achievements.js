@@ -30,5 +30,9 @@ const Achievement = sequelize.define("Achievement", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
 });
 module.exports = Achievement;

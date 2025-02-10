@@ -43,7 +43,7 @@ function GlobalForm(props) {
   const [imageClone3, setImageClone3] = useState([]);
   const [menuOptions, setMenuOptions] = useState([]);
   const [projects, setProjects] = useState();
-  const [check, setcheck] = useState(false);
+  const [check, setcheck] = useState(true);
 
   const NavigateTo = useNavigate();
   useEffect(() => {
@@ -321,7 +321,10 @@ function GlobalForm(props) {
             const updatedResult = await updateAxiosCall(
               "/updateAchievements",
               1,
-              inputs
+              {
+                ...inputs,
+                isActive: check,
+              }
             );
             if (updatedResult) {
               Swal.fire({
@@ -1330,6 +1333,23 @@ function GlobalForm(props) {
                   }}
                   value={inputs?.description}
                   required
+                />
+              </div>
+              <div className="flex flex-row items-center gap-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Show on Landing Page?
+                </label>
+                <Checkbox
+                  name="isActive"
+                  disabled={props?.pageMode === "Delete"}
+                  checked={inputs?.isActive}
+                  onChange={() => {
+                    setcheck(!check),
+                      setInputs({
+                        ...inputs,
+                        isActive: !inputs?.isActive,
+                      });
+                  }}
                 />
               </div>
               <div className="acitonButtons w-full flex justify-center">

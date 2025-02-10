@@ -23,6 +23,7 @@ exports.updateAchievement = async (req, res) => {
         counter2: req.body?.counter2,
         label3: req.body?.label3,
         counter3: req.body?.counter3,
+        isActive: req.body?.isActive,
       });
     }
     await achievement.update(updatedData);
